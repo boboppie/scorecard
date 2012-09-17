@@ -1,5 +1,5 @@
 # all combination of table factors
-wb <- read.csv("~/tmp/Workbook1.csv")
+wb <- read.csv("./workbook.csv")
 
 edu <- wb$Education[1:8]
 loan <- wb$Loan.Amount.Monthly.Income
@@ -17,8 +17,8 @@ colnames(combines) <- names(wb)
 
 combines <- data.frame(lapply(combines, as.character), stringsAsFactors=FALSE)
 
-# generate score
-# create a look table
+# generate scores
+# create a lookup table
 score_edu <- c('School up to 4 years'=-8, 'School 5-9 years'=-6, 'SSC/HSC'=-4, 'College but not graduate'=0,  Graduate=8, 'Postgraduate general/Postgraduate professional'=10, 'Student at School'=0, Other=-6)
 score_loan <- c(AA=-10, AB=2, AC=6, AD=10, AE=14, AF=16, BA=-16, BB=-2, BC=2, BD=6, BE=10, BF=14, CA=-28, CB=-4, CC=-2, CD=2, CE=6, CF=10, DA=-24, DB=-6, DC=-4, DD=-2, DE=2, DF=6, EA=-30, EB=-8, EC=-6, ED=-4, EE=-2, EF=2)
 score_res <- c('Self/spouse owned'=5, 'Living with parents'=0, Rent=-2)
@@ -30,7 +30,7 @@ score_cibil <- c('Does not exist '=0, '< 400'=-10, '(400, 800]'=5, '800+'=10)
 score_car <- c(No=0, Yes=5)
 
 edu_score <- score_edu[combines$Education]
-names(edu_score) <- NULL
+names(edu_score) <- NULL # remove header
 
 loan_score <- score_loan[combines$Loan.Amount.Monthly.Income]
 names(loan_score) <- NULL
@@ -66,7 +66,9 @@ ggplot(Score, aes(x=Score)) +
     geom_vline(aes(xintercept=median(Score, na.rm=T)), color="red", linetype="dashed", size=1) + 
     geom_vline(aes(xintercept=mean(Score, na.rm=T)), color="green", linetype="dashed", size=1)
 
-write.csv(Score,"~/tmp/score.csv", row.names=FALSE)
+write.csv(Score,"./score.csv", row.names=FALSE)
 
 combines$Score <- Score
-write.csv(combines,"~/tmp/combines_workbook.csv", row.names=FALSE)
+
+# generate a data file ~ 800M size
+write.csv(combines,"./combines_workbook.csv", row.names=FALSE)
